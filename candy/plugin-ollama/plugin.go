@@ -16,6 +16,7 @@
 package ollama
 
 import (
+	"embed"
 	"fmt"
 	"os"
 
@@ -23,17 +24,22 @@ import (
 	pb "github.com/opencharly/spec/proto"
 )
 
+//go:embed schema/*.cue
+var schemaFS embed.FS
+
 // NewProvider returns the ollama provider.
 func NewProvider() pb.ProviderServer { return &provider{} }
 
 // NewMeta advertises command:ollama — the COMPILED-IN registry path resolves it
 // (registerCompiledPlugin → resolve(ClassCommand,"ollama") → dispatchInProcCommand →
-// Invoke(OpRun)). A command plugin is input-less (pass-through CLI args), so it serves NO
-// schema (nil FS) — same shape as plugin-candy / plugin-example-command.
+// Invoke(OpRun)) — plus this plugin's OWN self-contained CUE schema (schema/ollama.cue)
+// served over Describe: there is NO schema-less plugin. The command's args are
+// pass-through CLI tokens rather than a structured plugin_input, so the schema documents
+// the command contract and the endpoint resolution.
 func NewMeta() pb.PluginMetaServer {
 	return sdk.NewMeta("2026.229.1013",
 		[]sdk.ProvidedCapability{{Class: "command", Word: "ollama"}},
-		nil)
+		schemaFS)
 }
 
 // CliMain is the CLI entrypoint (the out-of-process placement + the shared entry). The
