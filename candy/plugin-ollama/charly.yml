@@ -1,7 +1,5 @@
-version: 2026.232.0520
 plugin-ollama:
     candy:
-        version: 2026.229.1013
         description: |-
             COMPILED-IN charly COMMAND-class plugin (command:ollama) OWNING the entire
             `charly ollama` CLI — the host-side management surface for a DEPLOYED Ollama
