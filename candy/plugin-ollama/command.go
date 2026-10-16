@@ -301,7 +301,7 @@ func cmdCopy(client *api.Client, args []string) error {
 	if len(args) != 2 {
 		return fmt.Errorf("usage: charly ollama cp <src> <dst>")
 	}
-	if err := client.Copy(context.Background(), &api.CopyRequest{Source: args[0], Destination: args[1]}); err != nil {
+	if _, err := client.Copy(context.Background(), &api.CopyRequest{Source: args[0], Destination: args[1]}); err != nil {
 		return fmt.Errorf("ollama cp %s %s: %w", args[0], args[1], err)
 	}
 	fmt.Printf("copied %s to %s\n", args[0], args[1])
